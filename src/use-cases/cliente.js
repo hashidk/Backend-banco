@@ -64,7 +64,6 @@ module.exports = function makeUCClientes() {
             const _id = cliente._id
             delete cliente._id
             delete cliente.identificacion
-            delete cliente.identificacion.nickname
             await clienteDB.updateOne({ _id }, {$set: cliente});
             return null;    
         } catch (error) {

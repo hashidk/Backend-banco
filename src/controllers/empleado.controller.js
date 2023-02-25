@@ -145,6 +145,7 @@ function empleadosControllers() {
             
             var clnt = new Cliente({ nombre, apellido, provincia, ciudad, codigo_postal, identificacion: "l", email: correo })
             clnt.cliente.usuario.password = cliente.usuario.password
+            clnt.cliente.usuario.nickname = cliente.usuario.nickname
             clnt.cliente.identificacion = cliente.identificacion
             clnt.cliente.usuario.salt = cliente.usuario.salt
             clnt.cliente._id = cliente._id

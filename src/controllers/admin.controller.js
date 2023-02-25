@@ -83,6 +83,7 @@ function adminsControllers() {
             if (!empleado) return res.status(400).send("El empleado no existe")
             
             var empl = new Empleado({ nombre, apellido, identificacion: "l", email: correo })
+            empl.empleado.usuario.nickname = empleado.usuario.nickname
             empl.empleado.usuario.password = empleado.usuario.password
             empl.empleado.identificacion = empleado.identificacion
             empl.empleado.usuario.salt = empleado.usuario.salt

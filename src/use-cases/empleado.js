@@ -40,7 +40,6 @@ module.exports = function makeUCEmpleados() {
             const _id = empleado._id
             delete empleado._id
             delete empleado.identificacion
-            delete empleado.identificacion.nickname
             await empleadoDB.updateOne({ _id }, {$set: empleado});
             return null;    
         } catch (error) {
