@@ -13,7 +13,7 @@ var conn = {
 
 async function initConnection(){
     try {
-        Logger.logInfo("Abriendo la conexión a MongoDB...")
+        Logger.logInfo(`Abriendo la conexión a MongoDB en ${process.env.URI_MONGODB.replace(process.env.DB_PASSWORD, "********").replace(process.env.DB_PASSWORD, "********")}...`)
         conn.connection = await client.connect()
         conn.db         = conn.connection.db(process.env.DB_MONGODB || "Banco")
     } catch (error) {

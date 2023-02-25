@@ -32,7 +32,7 @@ function runServer(app) {
         
 
         app.listen(process.env.PORTSERV, () => {
-            Logger.logInfo(`Servidor abierto en ${process.env.IPADDRSERV}:${process.env.PORTSERV}`)
+            Logger.logInfo(`Servidor abierto en: ${process.env.IPADDRSERV}:${process.env.PORTSERV} en el modo:${process.env.MODE}`)
         })   
     })
     // .finally( () => {
