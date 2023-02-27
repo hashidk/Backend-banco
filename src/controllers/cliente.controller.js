@@ -14,9 +14,9 @@ function clientesControllers() {
 
         try {
             var result = await getCliente(nickname)
-            return res.status(200).send(result)
+            return res.status(200).send({data:result})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
@@ -24,18 +24,18 @@ function clientesControllers() {
         const { nickname } = res.locals.user 
         try {
             var result = await getCuentasByCliente(nickname)
-            return res.status(200).send(result)
+            return res.status(200).send({data:result})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
     async function getBancos(req, res) {
         try {
             var result = await getBancos4Client()
-            return res.status(200).send(result)
+            return res.status(200).send({data:result})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }  
     }
 
@@ -43,9 +43,9 @@ function clientesControllers() {
         const { idCuenta } = req.params;
         try {
             var result = await getCuentasDiffById(idCuenta)
-            return res.status(200).send(result)
+            return res.status(200).send({data:result})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
     
@@ -55,12 +55,12 @@ function clientesControllers() {
         try {
             var result = await getCuentaByCliente(nickname, idCuenta)
             if (!result) {
-                return res.status(400).send("No posee esta cuenta o no es parte de ella")
+                return res.status(400).send({message:"No posee esta cuenta o no es parte de ella"})
             }else{
-                return res.status(200).send(result)
+                return res.status(200).send({data:result})
             }
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
@@ -69,7 +69,7 @@ function clientesControllers() {
         const { nickname } = res.locals.user 
         var { monto, cuentaDestino } = req.body
         if (!monto || !cuentaDestino) {
-            return res.status(400).send("Enviar todos los datos necesarios")
+            return res.status(400).send({message:"Enviar todos los datos necesarios"})
         }
         
         //Validar datos
@@ -77,48 +77,47 @@ function clientesControllers() {
             await validators.validNumber().monto.validateAsync({value: monto})
             await validators.validString("cuenta destino").anystring.validateAsync({value: cuentaDestino})
         } catch (error) {
-            return res.status(400).send(error.message)
+            return res.status(400).send({message:error.message})
         }
 
 
         if (idCuenta === cuentaDestino) {
-            return res.status(400).send("No es posible transferir dinero a la misma cuenta")
+            return res.status(400).send({message:"No es posible transferir dinero a la misma cuenta"})
         }
         monto = Math.round(parseFloat(monto)*100)/100
 
         if (monto <= 0) {
-            return res.status(400).send("El monto debe ser un valor distinto de cero o negativo")
+            return res.status(400).send({message:"El monto debe ser un valor distinto de cero o negativo"})
         }
-        // return res.status(200).send(`transferencia realizada desde la cuenta: ${idCuenta}`)
 
         try {
             var cuenta = await getCuentaByCliente(nickname, idCuenta)
             if (!cuenta) {
-                return res.status(400).send("No posee la cuenta de origen o no es parte de ella")
+                return res.status(400).send({message:"No posee la cuenta de origen o no es parte de ella"})
             }
             //Verificar si existen los fondos necesarios
             if (cuenta.monto < monto) {
-                return res.status(400).send("No existen los fondos suficientes")
+                return res.status(400).send({message:"No existen los fondos suficientes"})
             }
             
             // Verificar si no excede al limite
             if (!TransferenciaInterna.verificarLimite(monto)) {
-                return res.status(400).send("El limite excede al limite de transferencia")
+                return res.status(400).send({message:"El limite excede al limite de transferencia"})
             }
             
             //Verificar si existe la otra cuenta cuentas
             var cuenta2 = await getCuentaById(cuentaDestino)
             if (!cuenta2) {
-                return res.status(400).send("La cuenta destino no existe")
+                return res.status(400).send({message:"La cuenta destino no existe"})
             }
 
             //Realizar la transferencia
             await transferInternAsNonTransaction(cuenta._id, cuenta2._id, monto)
             
-            return res.status(200).send("Transferencia realizada exitosamente")
+            return res.status(200).send({message:"Transferencia realizada exitosamente"})
 
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
@@ -127,7 +126,7 @@ function clientesControllers() {
         const { nickname } = res.locals.user 
         var { monto, cuentaDestino, banco } = req.body
         if (!monto || !cuentaDestino || !banco) {
-            return res.status(400).send("Enviar todos los datos necesarios")
+            return res.status(400).send({message:"Enviar todos los datos necesarios"})
         }
 
         //Validar datos
@@ -136,7 +135,7 @@ function clientesControllers() {
             await validators.validString("cuenta destino").anystring.validateAsync({value: cuentaDestino})
             await validators.validString("banco").anystring.validateAsync({value: banco})
         } catch (error) {
-            return res.status(400).send(error.message)
+            return res.status(400).send({message:error.message})
         }
 
         monto = Math.round(parseFloat(monto)*100)/100
@@ -144,21 +143,21 @@ function clientesControllers() {
         try {
             var cuenta = await getCuentaByCliente(nickname, idCuenta)
             if (!cuenta) {
-                return res.status(400).send("No posee la cuenta de origen o no es parte de ella")
+                return res.status(400).send({message:"No posee la cuenta de origen o no es parte de ella"})
             }
             //Verificar si existen los fondos necesarios
             if (cuenta.monto < monto) {
-                return res.status(400).send("No existen los fondos suficientes")
+                return res.status(400).send({message:"No existen los fondos suficientes"})
             }
             
             // Verificar si no excede al limite
             if (!TransferenciaExterna.verificarLimite(monto)) {
-                return res.status(400).send("El limite excede a al limite de transferencia")
+                return res.status(400).send({message:"El limite excede a al limite de transferencia"})
             }
             
             // Verificar que exista ese banco dentro de la base de datos
             var bancoss = await getBanco(banco)
-            if (!bancoss) return res.status(400).send("Ese banco no se encuentra registrado")
+            if (!bancoss) return res.status(400).send({message:"Ese banco no se encuentra registrado"})
 
             //Verificar conexión con el banco
             await testBanco(bancoss.dominio+bancoss.prueba)
@@ -181,14 +180,13 @@ function clientesControllers() {
             //Añadir transferencia
             await addTranferenciaExterna(idCuenta, cuentaDestino, monto, bancoss.nombre)
             
-            return res.status(200).send("Transferencia realizada exitosamente")
+            return res.status(200).send({message:"Transferencia realizada exitosamente"})
 
         } catch (error) {
             if (!error.msg) {
-                console.log(error);
-                return res.status(400).send("Error al realizar la petición")
+                return res.status(400).send({message:"Error al realizar la petición"})
             }else{
-                return res.status(error.code).send(error.msg)
+                return res.status(error.code).send({message:error.msg})
             }
         }
     }
@@ -196,7 +194,7 @@ function clientesControllers() {
     async function receptar_externa(req, res) {
         var { monto, cuentaDestino, cuentaOrigen, nombreBanco } = req.body
         if (!monto || !cuentaDestino || !cuentaOrigen || !nombreBanco) {
-            return res.status(400).send("Enviar todos los datos necesarios")
+            return res.status(400).send({message:"Enviar todos los datos necesarios"})
         }
 
         //Validar datos
@@ -206,7 +204,7 @@ function clientesControllers() {
             await validators.validString("cuenta origen").anystring.validateAsync({value: cuentaOrigen})
             await validators.validString("banco").anystring.validateAsync({value: nombreBanco})
         } catch (error) {
-            return res.status(400).send(error.message)
+            return res.status(400).send({message:error.message})
         }
 
         monto = Math.round(parseFloat(monto)*100)/100
@@ -216,7 +214,7 @@ function clientesControllers() {
             //Verificar si existe cuenta destino
             var cuenta2 = await getCuentaById(cuentaDestino)
             if (!cuenta2) {
-                return res.status(400).send("La cuenta destino no existe")
+                return res.status(400).send({message:"La cuenta destino no existe"})
             }
 
             //Realizar la transferencia
@@ -226,9 +224,9 @@ function clientesControllers() {
             //Añadir transferencia
             await addTranferenciaExterna(cuentaOrigen, cuentaDestino, monto, nombreBanco)
 
-            return res.status(200).send("Se ha añadido el monto")
+            return res.status(200).send({message:"Se ha añadido el monto"})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 

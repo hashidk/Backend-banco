@@ -54,7 +54,16 @@ module.exports = function makeUCBancos() {
         }
     }
 
+    async function deleteBanco(_id) {
+        try {
+            await bancosDB.deleteOne({ _id });
+            return null;    
+        } catch (error) {
+            throw error;   
+        }
+    }
+
     return Object.freeze({
-        getBancos, getBanco, createBanco, updateBanco, getBancoByName, getBancos4Client
+        getBancos, getBanco, createBanco, updateBanco, getBancoByName, getBancos4Client, deleteBanco
     })
   }

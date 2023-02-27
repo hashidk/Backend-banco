@@ -12,7 +12,7 @@ const adminDB = handleCollectionDB("Admins");
 const authorization = async (req, res, next) => {
     const token = req.cookies.access_token;
     if (!token) {
-      return res.status(403).send("Inicie sesión para poder ingresar");
+      return res.status(403).send({message:"Inicie sesión para poder ingresar"});
     }
 
     const data = jwt.verify(token, SECRET_KEY);
@@ -29,21 +29,21 @@ const authorization = async (req, res, next) => {
             user = await adminDB.findOne({ identificacion: data.nickname })
             break;
         default:
-            return res.status(400).send("Rol incorrecto");
+            return res.status(400).send({message:"Rol incorrecto"});
       }
 
       var urlTo = req.baseUrl.split("/").slice(-1)[0]
       if ( urlTo !== data.rol && (urlTo === "cliente" || urlTo === "empleado" || urlTo === "administrador")) {
-        return res.status(401).send("Acceso no autorizado");
+        return res.status(401).send({message:"Acceso no autorizado"});
       }
       if (!user) {
-        return res.status(403).send('No se pudo autenticarle, vuelva a intentar')
+        return res.status(403).send({message:'No se pudo autenticarle, vuelva a intentar'})
       }else{
         res.locals.user = data
         return next();
       }
     } catch(err) {
-      return res.status(403).send("Falla al obtener el token: " + err);
+      return res.status(403).send({message:"Falla al recuperar el token"});
     }
   };
 
@@ -59,7 +59,7 @@ const basicAuth = (req, res, next) => {
     return next()
   }
 
-  res.status(401).send('Acceso no autorizado, requiere autenticación') // custom message
+  res.status(401).send({message:'Acceso no autorizado, requiere autenticación'}) // custom message
 }
 
   module.exports = {

@@ -48,6 +48,16 @@ function handleCollectionDb(_collec) {
         }
     }
 
+    async function deleteOne(_filter, _config={}) {
+        try {
+            await conn.db.collection( _collec ).deleteOne(_filter, _config);
+            return null;
+        } catch (error) {
+            Logger.logErr(error);
+            throw new ErrorHTTP(`No se pudo eliminar ese registro`, 500);
+        }
+    }
+
     async function createSession() {
         const session = conn.connection.startSession()
         return {session, options: transactionOptions};
@@ -58,7 +68,8 @@ function handleCollectionDb(_collec) {
         findOne,
         insertOne,
         updateOne,
-        createSession
+        createSession,
+        deleteOne
       });
 
 }

@@ -47,7 +47,19 @@ module.exports = function makeUCEmpleados() {
         }
     }
 
+    async function changeActiveEmpleado(_id, activo) {
+        try {
+            if (activo) {
+                await empleadoDB.updateOne({_id}, {$set: {activo:false}})
+            }else{
+                await empleadoDB.updateOne({_id}, {$set: {activo:true}})
+            }
+        } catch (error) {
+            throw error; 
+        }
+    }
+
     return Object.freeze({
-        getEmpleado, createEmpleado, getEmpleadoById, updateEmpleado, getEmpleados
+        getEmpleado, createEmpleado, getEmpleadoById, updateEmpleado, getEmpleados, changeActiveEmpleado
     })
   }

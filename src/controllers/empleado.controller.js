@@ -12,25 +12,25 @@ function empleadosControllers() {
         const { nickname } = res.locals.user
         try {
             var result = await getEmpleado(nickname)
-            return res.status(200).send(result)
+            return res.status(200).send({data: result})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
     async function getClientes(req, res) {
         try {
             var result = await getClientesUS()
-            return res.status(200).send(result)
+            return res.status(200).send({data:result})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
     async function addCliente(req, res) {
         const { nombre, apellido, provincia, ciudad, codigo_postal, identificacion, correo } = req.body
         if (!nombre || !apellido || !provincia || !ciudad || !codigo_postal || !identificacion || !correo) {
-            return res.status(400).send("No enviaron los datos necesarios")
+            return res.status(400).send({message:"No enviaron los datos necesarios"})
         }
 
         try {
@@ -42,12 +42,12 @@ function empleadosControllers() {
             await validators.validString().identificacion.validateAsync({value: identificacion})
             await validators.validString().email.validateAsync({value: correo})
         } catch (error) {
-            return res.status(400).send(error.message)
+            return res.status(400).send({message:error.message})
         }
 
         try {
             var cliente = await getCliente(identificacion);
-            if (cliente) return res.status(400).send("El cliente ya existe")
+            if (cliente) return res.status(400).send({message:"El cliente ya existe"})
 
             var password = generatePasswordRand(16)
 
@@ -59,24 +59,24 @@ function empleadosControllers() {
 
             await createCliente(nuevoCliente.cliente)
 
-            return res.status(200).send("Se ha creado un nuevo cliente")
+            return res.status(200).send({message:"Se ha creado un nuevo cliente"})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
     async function getCuentas(req, res) {
         try {
             var result = await getCuentasUS()
-            return res.status(200).send(result)
+            return res.status(200).send({data:result})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
     async function addCuenta(req, res) {
         var { tipo, clientes } = req.body
-        if (!tipo || !clientes) return res.status(400).send("No se enviaron los datos necesarios")
+        if (!tipo || !clientes) return res.status(400).send({message:"No se enviaron los datos necesarios"})
     
         //Validar datos
         try {
@@ -91,7 +91,7 @@ function empleadosControllers() {
         }else if(tipo === "ahorro" || tipo === "A"){
             tipo = "A"
         }else{
-            return res.status(400).send("El tipo de cuenta debe ser: ahorro o corriente");
+            return res.status(400).send({message:"El tipo de cuenta debe ser: ahorro o corriente"});
         }
 
         try {
@@ -101,22 +101,22 @@ function empleadosControllers() {
             } else if (Array.isArray(clientes)) {
                 clientes = [...new Set(clientes)] //Eliminar repetidos
             } else {
-                return res.status(400).send("No ha proporcionado los datos correctos");
+                return res.status(400).send({message:"No ha proporcionado los datos correctos"});
             }
 
             for (var i in clientes) {
                 var resp = await getClienteById(clientes[i]);
                 if (!resp) {
-                    return res.status(400).send(`No existe el cliente con id: ${clientes[i]}`);
+                    return res.status(400).send({message:`No existe el cliente con id: ${clientes[i]}`});
                 }
             }
 
             const nuevaCuenta = new Cuenta({ tipo, clientes })
             await createCuenta(nuevaCuenta.cuenta)
 
-            return res.status(200).send("Se ha creado una nueva Cuenta")
+            return res.status(200).send({message:"Se ha creado una nueva Cuenta"})
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
@@ -125,7 +125,7 @@ function empleadosControllers() {
 
         const { nombre, apellido, provincia, ciudad, codigo_postal, correo } = req.body
         if (!nombre || !apellido || !provincia || !ciudad || !codigo_postal || !correo) {
-            return res.status(400).send("No enviaron los datos necesarios")
+            return res.status(400).send({message:"No enviaron los datos necesarios"})
         }
 
         try {
@@ -136,24 +136,25 @@ function empleadosControllers() {
             await validators.validString().code_postal.validateAsync({value: codigo_postal})
             await validators.validString().email.validateAsync({value: correo})
         } catch (error) {
-            return res.status(400).send(error.message)
+            return res.status(400).send({message:error.message})
         }
 
         try {
             var cliente = await getClienteById(idCliente);
-            if (!cliente) return res.status(400).send("El cliente no existe")
+            if (!cliente) return res.status(400).send({message:"El cliente no existe"})
             
             var clnt = new Cliente({ nombre, apellido, provincia, ciudad, codigo_postal, identificacion: "l", email: correo })
             clnt.cliente.usuario.password = cliente.usuario.password
             clnt.cliente.usuario.nickname = cliente.usuario.nickname
             clnt.cliente.identificacion = cliente.identificacion
             clnt.cliente.usuario.salt = cliente.usuario.salt
+            clnt.cliente.activo = cliente.activo
             clnt.cliente._id = cliente._id
 
             await updateClienteUS(clnt.cliente)
-            return res.status(200).send("Cliente actualizado");
+            return res.status(200).send({message:"Cliente actualizado"});
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
@@ -161,13 +162,13 @@ function empleadosControllers() {
         const { idCliente } = req.params;
         try {
             var cliente = await getClienteById(idCliente);
-            if (!cliente) return res.status(400).send("El cliente no existe")
+            if (!cliente) return res.status(400).send({message:"El cliente no existe"})
 
             await changeActiveCliente(idCliente, cliente.activo)
 
-            return res.status(200).send(`Cliente ${cliente.activo ? "desactivado" : "activado"}`);
+            return res.status(200).send({message:`Cliente ${cliente.activo ? "desactivado" : "activado"}`});
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
@@ -178,36 +179,36 @@ function empleadosControllers() {
         try {
             validators.validNumber().monto.validateAsync({value: monto})
         } catch (error) {
-            return res.status(400).send(error.message)
+            return res.status(400).send({message:error.message})
         }
 
         if (!monto) {
-            return res.status(400).send("No enviaron los datos necesarios")
+            return res.status(400).send({message:"No enviaron los datos necesarios"})
         }
         try {
             var cuenta = await getCuentaById(idCuenta);
-            if (!cuenta) return res.status(400).send("La cuenta no existe")
+            if (!cuenta) return res.status(400).send({message:"La cuenta no existe"})
             
             cuenta.monto = Math.round(parseFloat(monto)*100)/100
 
             await updateCuentaUS(cuenta)
-            return res.status(200).send("Cuenta actualizada");
+            return res.status(200).send({message:"Cuenta actualizada"});
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 
     async function changeStatusCuenta(req, res) {
         const { idCuenta } = req.params;
         try {
-            var cuenta = await getClienteById(idCuenta);
-            if (!cuenta) return res.status(400).send("La cuenta no existe")
+            var cuenta = await getCuentaById(idCuenta);
+            if (!cuenta) return res.status(400).send({message:"La cuenta no existe"})
 
             await changeActiveCuenta(idCuenta, cuenta.activo)
 
-            return res.status(200).send(`Cuenta ${cuenta.activo ? "desactivada" : "activada"}`);
+            return res.status(200).send({message:`Cuenta ${cuenta.activo ? "desactivada" : "activada"}`});
         } catch (error) {
-            return res.status(error.code).send(error.msg)
+            return res.status(error.code).send({message:error.msg})
         }
     }
 

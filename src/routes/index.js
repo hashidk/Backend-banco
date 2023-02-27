@@ -6,7 +6,6 @@ const rutasCliente = require("./cliente.routes")
 const rutasEmpleado = require("./empleado.routes")
 const rutasAdmin = require("./admin.routes")
 
-
 router.post("/login", controllers.authControllers().loginUser)
 // router.post("/register", controllers.authControllers().registerUser)
 router.post("/logout", middlewares.authorization,controllers.authControllers().logOut)

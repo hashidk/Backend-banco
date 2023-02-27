@@ -1,3 +1,4 @@
 Admin: Su usuario es: 1777856465 y su contraseña es: CIdhxRzakZrjEOsu
 Empleado: Su usuario es: 1684548462 y su contraseña es: ighDXOYIbjfI6ftU
 Cliente: Su usuario es: 1548465564 y su contraseña es: jOUaWXAQa84FCJa0
+Empleado: Su usuario es: 5155151315 y su contraseña es: AcKITQK62zVndblX
