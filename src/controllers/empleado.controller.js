@@ -12,7 +12,13 @@ function empleadosControllers() {
         const { nickname } = res.locals.user
         try {
             var result = await getEmpleado(nickname)
-            return res.status(200).send({data: result})
+            var clientes = await getClientesUS()
+            var cuentas = await getCuentasUS()
+            var resumen = {
+                clientes: clientes.length,
+                cuentas: cuentas.length,
+            }
+            return res.status(200).send({data: result, resumen})
         } catch (error) {
             return res.status(error.code).send({message:error.msg})
         }
