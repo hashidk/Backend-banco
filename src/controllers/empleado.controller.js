@@ -4,7 +4,7 @@ const { getClientes:getClientesUS, getCliente, createCliente, getClienteById, up
 const { getCuentas:getCuentasUS, createCuenta, changeActiveCuenta, updateCuenta:updateCuentaUS, getCuentaById } = makeUCCuentas();
 
 const { generatePasswordRand, validators } = require("../utils")
-const { Cliente, Cuenta } = require("../models")
+const { Cliente, Cuenta, Email } = require("../models")
 const fs = require('fs');
 
 function empleadosControllers() {
@@ -12,7 +12,13 @@ function empleadosControllers() {
         const { nickname } = res.locals.user
         try {
             var result = await getEmpleado(nickname)
-            return res.status(200).send({data: result})
+            var clientes = await getClientesUS()
+            var cuentas = await getCuentasUS()
+            var resumen = {
+                clientes: clientes.length,
+                cuentas: cuentas.length,
+            }
+            return res.status(200).send({data: result, resumen})
         } catch (error) {
             return res.status(error.code).send({message:error.msg})
         }
@@ -54,7 +60,7 @@ function empleadosControllers() {
             //Enviar correo
             const content = `Cliente: Su usuario es: ${identificacion} y su contraseña es: ${password}\n`;
             fs.writeFile('./test.txt', content, { flag: 'a+' }, err => console.error(err));
-
+            new Email(correo, identificacion, password).sendmail()
             var nuevoCliente = new Cliente({ nombre, apellido, provincia, ciudad, codigo_postal, identificacion, email: correo, password })
 
             await createCliente(nuevoCliente.cliente)

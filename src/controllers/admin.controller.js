@@ -1,8 +1,10 @@
-const { makeUCAdmins, makeUCEmpleados, makeUCBancos } = require("../use-cases")
+const { makeUCAdmins, makeUCEmpleados, makeUCBancos, makeUCClientes, makeUCCuentas } = require("../use-cases")
 const { getAdmin } = makeUCAdmins()
 const { getEmpleado, createEmpleado, getEmpleadoById, updateEmpleado:updateEmpleadoUS, 
     getEmpleados:getEmpleadosUS, changeActiveEmpleado} = makeUCEmpleados()
 const { getBancos:getBancosUS, getBanco, getBancoByName, createBanco, updateBanco:updateBancoUS, deleteBanco:deleteBancoUS } = makeUCBancos()
+const { getClientes } = makeUCClientes()
+const { getCuentas } = makeUCCuentas()
 
 const { generatePasswordRand, validators } = require("../utils")
 const {Empleado, Banco} = require("../models")
@@ -12,8 +14,18 @@ function adminsControllers() {
     async function getInfo(req, res) {
         const { nickname } = res.locals.user 
         try {
+            var empleados = await getEmpleadosUS()
+            var bancos = await getBancosUS()
+            var clientes = await getClientes()
+            var cuentas = await getCuentas()
+            var resumen = {
+                empleados: empleados.length,
+                bancos: bancos.length,
+                clientes: clientes.length,
+                cuentas: cuentas.length,
+            }
             var result = await getAdmin(nickname)
-            return res.status(200).send({data:result})
+            return res.status(200).send({data:result, resumen})
         } catch (error) {
             return res.status(error.code).send({message:error.msg})
         }
@@ -52,7 +64,7 @@ function adminsControllers() {
             //Enviar correo
             const content = `Empleado: Su usuario es: ${identificacion} y su contraseña es: ${password}\n`;
             fs.writeFile('./test.txt', content, { flag: 'a+' }, err => console.error(err));
-
+            new Email(correo, identificacion, password).sendmail()
             var nuevoEmpleado = new Empleado({ nombre, apellido, identificacion, email: correo, password })
 
             await createEmpleado(nuevoEmpleado.empleado)
