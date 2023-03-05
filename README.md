@@ -5,6 +5,9 @@ Todo: Backend del proyecto de Sistema Bancario 2
 Para empezar deberá clonar el repositorio con el siguiente comando:
 > git clone https://github.com/hashidk/Backend-banco.git
 
+Luego deberá dirigirse a la nueva carpeta generada con el comando:
+> cd Backend-banco
+
 El proyecto usa como base [NojeJS](https://nodejs.org/es/), por lo tanto para iniciar el servidor deberá descargarlo e instalarlo, puede hacerlo a través del siguiente enlace: https://nodejs.org/es/.
 
 Para descargar todas las librerías necesarias para el proyecto use el comando:
