@@ -8,7 +8,6 @@ rutasEmpleado.post("/clientes", controllers.empleadoControllers().addCliente)
 rutasEmpleado.put("/clientes/:idCliente", controllers.empleadoControllers().updateCliente)
 rutasEmpleado.delete("/clientes/:idCliente", controllers.empleadoControllers().changeStatusCliente)
 
-
 rutasEmpleado.get("/cuentas", controllers.empleadoControllers().getCuentas)
 rutasEmpleado.post("/cuentas", controllers.empleadoControllers().addCuenta)
 rutasEmpleado.put("/cuentas/:idCuenta", controllers.empleadoControllers().updateCuenta)

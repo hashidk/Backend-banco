@@ -1,8 +1,5 @@
 const Joi = require("joi")
 
-
-// const { nombre, apellido, provincia, ciudad, codigo_postal, correo } = req.body
-
 function validString(nombre) {
     const anystring = Joi.object().keys({
         value: Joi.string().empty().required().messages({
@@ -69,9 +66,3 @@ function validNumber(nombre) {
 module.exports = {
     validString, validNumber
 }
-
-//   let {error} = validacionUser.validate({
-//     email:    user.email, 
-//     password: user.password, 
-//     nickname: user.nickname
-//   })

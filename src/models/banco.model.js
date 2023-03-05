@@ -1,5 +1,3 @@
-const uuid = require('uuid');
-
 class Banco {
     constructor (data){
         this.bank = {

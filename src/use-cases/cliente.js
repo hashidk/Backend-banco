@@ -1,5 +1,4 @@
 const handleCollectionDB = require("../data-access");
-const { ErrorHTTP } = require("../models");
 const clienteDB = handleCollectionDB("Clientes")
 
 module.exports = function makeUCClientes() {
@@ -29,16 +28,6 @@ module.exports = function makeUCClientes() {
     }
 
     async function createCliente(cliente) {
-        // var verify = User.validar({
-        //     nickname: user.nickname,
-        //     email: user.email,
-        //     password: user.password
-        // })
-        // if(verify)
-        //     return {
-        //         error: "Error al validar los valores: " + verify,
-        //         codigo: 400
-        //     }
         try {
             await clienteDB.insertOne(cliente);
             return null;    

@@ -12,5 +12,4 @@ rutasAdmin.post("/bancos", controllers.adminsControllers().addBanco)
 rutasAdmin.put("/bancos/:idBanco", controllers.adminsControllers().updateBanco)
 rutasAdmin.delete("/bancos/:idBanco", controllers.adminsControllers().deleteBanco)
 
-
 module.exports = rutasAdmin;

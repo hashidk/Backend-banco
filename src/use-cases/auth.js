@@ -55,58 +55,8 @@ module.exports = function makeAuthUsers() {
         }, SECRET_KEY);
     }
     
-    // async function findUser(nickname) {
-    //     const query = { nickname };
-    //     try {
-    //         var resp = await hUserDB.findOne(query)
-    //         return {
-    //             error: null,
-    //             codigo: 200,
-    //             user: resp
-    //         }
-    //     } catch (error) {
-    //         return {
-    //             error: err,
-    //             codigo: 400,
-    //             user: null
-    //         }
-    //     }
-    // }
-
-    // async function createUser(user) {
-    //     var verify = User.validar({
-    //         nickname: user.nickname,
-    //         email: user.email,
-    //         password: user.password
-    //     })
-    //     if(verify)
-    //         return {
-    //             error: "Error al validar los valores: " + verify,
-    //             codigo: 400
-    //         }
-        
-    //     var newUser = new User({
-    //         nickname: user.nickname,
-    //         email: user.email,
-    //     })
-    //     newUser.encryptPassword(user.password)
-    //     var err = await hUserDB.insertOne(newUser.data);
-    //     if (err) 
-    //         return {
-    //             error: "Error al insertar los valores",
-    //             codigo: 400
-    //         }
-
-    //     return {
-    //         error: null,
-    //         codigo: 200
-    //     }
-    // }
-
     return Object.freeze({
         verifyCredentialsUser,
-        genJWT,
-        // createUser,
-        // findUser
+        genJWT
     })
   }
