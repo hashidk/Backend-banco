@@ -18,6 +18,7 @@ Y automáticamente se descargarán, para iniciar el servidor use el comando:
 
 O en el caso de querer iniciar el servidor en modo desarrollador (para este caso se hace el uso de nodemon que permite actualizar el servidor cada que se realice un cambio) use el siguiente comando:
 > npm run dev -- -default
+
 Se usa el parámetro -default para usar la configuración por defecto y los dos guiones anteriores (--) para añadir parámetros luego de los comandos, sin estos no se detectarán los parámetrnpos.
 
 El sistema sigue la siguiente arquitectura:
