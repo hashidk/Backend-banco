@@ -6,7 +6,7 @@ require("dotenv").config()
 
 if (process.argv.length === 2) { 
     console.error('Coloque al menos un argumento del siguiente ejemplo:'); 
-    console.error("  [command] -- -m=[development/production] -p=[PORT] -a=[DIR IP] -db=[local/remote]");
+    console.error("  [command] -- -m=[development/production] -p=[PORT] -db=[local/remote] -dbname=[nombre_db]");
     console.error("  [command] -- -default");
     process.exit(1); 
 } 
@@ -34,8 +34,8 @@ if (process.argv[2] === "-default") {
                     process.exit(1); 
                 }
                 break;
-            case "-a":
-                process.env.IPADDRSERV = command[1]
+            case "-dbname":
+                process.env.DB_MONGODB = command[1]
                 break;
             case "-db":
                 if (command[1] === "local") {
